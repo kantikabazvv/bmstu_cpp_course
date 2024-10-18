@@ -1,35 +1,34 @@
 #include <assert.h>
-#include "int2str.h"
-#include "stdio.h"
-#include <malloc.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
 
 char* int2str(int number) {
-    int i = 0;
-    int isNegative = 0;
-    char *str = "0";
-    str = (char*)malloc(20 * sizeof(char));
-
+    if (number == -2147483648) {
+        return "-2147483648";
+    }
+    bool isNegative = false;
+    if (number == 0) {
+        return "0";
+    }
     if (number < 0) {
-        isNegative = 1;
+        isNegative = true;
         number = -number;
     }
-
-    do {
-        str[i++] = (number % 10) + '0';  
-        number /= 10;                       
-    } while (number > 0);
-
-    if (isNegative==1) {
-        str[i++] = '-';                     
+    int len = 0;
+    int temp = number;
+    while (temp != 0) {
+        temp /= 10;
+        len++;
     }
-
-    str[i] = '\0';                         
-
-    for (int j = 0; j < i / 2; j++) {
-        char temp = str[j];
-        str[j] = str[i - j - 1];
-        str[i - j - 1] = temp;
+    char *str = (char*)malloc(len + isNegative + 1);
+    str[len + isNegative] = '\0';
+    for (int i = len + isNegative - 1; i >= isNegative; i--) {
+        str[i] = (number % 10) + '0';
+        number /= 10;
     }
-    
+    if (isNegative) {
+        str[0] = '-';
+    }
     return str;
 }
